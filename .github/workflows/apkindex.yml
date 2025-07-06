@@ -1,0 +1,45 @@
+name: Generate APKINDEX and Sign
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'repo/x86_64/*.apk'
+
+jobs:
+  generate-index:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install apk-tools and openssl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y alpine-sdk openssl
+
+      - name: Restore Signing Key
+        run: |
+          echo "${{ secrets.APK_SIGN_KEY }}" | base64 -d > myrepo.rsa
+          chmod 600 myrepo.rsa
+
+      - name: Generate APKINDEX.tar.gz
+        run: |
+          cd repo/x86_64
+          apk index -o APKINDEX.tar.gz *.apk
+
+      - name: Sign APKINDEX.tar.gz
+        run: |
+          cd repo/x86_64
+          openssl dgst -sha1 -sign ../../myrepo.rsa APKINDEX.tar.gz > APKINDEX.tar.gz.sig
+
+      - name: Commit and Push
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add repo/x86_64/APKINDEX.tar.gz repo/x86_64/APKINDEX.tar.gz.sig
+          git commit -m "Update APKINDEX and signature" || echo "Nothing to commit"
+          git push
+
