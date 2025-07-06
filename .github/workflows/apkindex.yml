@@ -29,7 +29,7 @@ jobs:
             alpine:latest \
             sh -c "apk update && apk add alpine-sdk openssl && \
                    cd /repo && \
-                   cp /tmp/key/-6850c78f.rsa.pub /etc/apk/keys/ && \
+                   cp /tmp/keys/-6850c78f.rsa.pub /etc/apk/keys/ && \
                    apk index -o APKINDEX.tar.gz *.apk && \
                    openssl dgst -sha1 -sign /key/myrepo.rsa APKINDEX.tar.gz > APKINDEX.tar.gz.sig"
 
