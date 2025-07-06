@@ -9,7 +9,7 @@ on:
 
 jobs:
   generate-index:
-    runs-on: ubuntu-latest
+    runs-on: ip-172-31-4-21
 
     steps:
       - name: Checkout
@@ -27,8 +27,8 @@ jobs:
 
       - name: Generate APKINDEX.tar.gz
         run: |
-          cd repo/x86_64
-          apk index -o APKINDEX.tar.gz *.apk
+	  sudo docker run --rm -v ${{ github.workspace }}/repo/x86_64:/repo -w /repo alpine:latest \
+            sh -c "apk update && apk add alpine-sdk openssl && apk index -o APKINDEX.tar.gz *.apk && openssl dgst -sha1 -sign /repo/../myrepo.rsa APKINDEX.tar.gz > APKINDEX.tar.gz.sig"
 
       - name: Sign APKINDEX.tar.gz
         run: |
