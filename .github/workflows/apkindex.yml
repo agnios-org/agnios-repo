@@ -9,31 +9,27 @@ on:
 
 jobs:
   generate-index:
-    runs-on: ip-172-31-4-21
+    runs-on: [self-hosted]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install apk-tools and openssl
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential pkg-config libssl-dev zlib1g-dev
 
       - name: Restore Signing Key
         run: |
           echo "${{ secrets.APK_SIGN_KEY }}" | base64 -d > myrepo.rsa
           chmod 600 myrepo.rsa
 
-      - name: Generate APKINDEX.tar.gz
+      - name: Generate APKINDEX.tar.gz and Sign
         run: |
-	  sudo docker run --rm -v ${{ github.workspace }}/repo/x86_64:/repo -w /repo alpine:latest \
-            sh -c "apk update && apk add alpine-sdk openssl && apk index -o APKINDEX.tar.gz *.apk && openssl dgst -sha1 -sign /repo/../myrepo.rsa APKINDEX.tar.gz > APKINDEX.tar.gz.sig"
-
-      - name: Sign APKINDEX.tar.gz
-        run: |
-          cd repo/x86_64
-          openssl dgst -sha1 -sign ../../myrepo.rsa APKINDEX.tar.gz > APKINDEX.tar.gz.sig
+          sudo docker run --rm \
+            -v ${{ github.workspace }}/repo/x86_64:/repo \
+            -v ${{ github.workspace }}/myrepo.rsa:/key/myrepo.rsa \
+            alpine:latest \
+            sh -c "apk update && apk add alpine-sdk openssl && \
+                   cd /repo && \
+                   apk index -o APKINDEX.tar.gz *.apk && \
+                   openssl dgst -sha1 -sign /key/myrepo.rsa APKINDEX.tar.gz > APKINDEX.tar.gz.sig"
 
       - name: Commit and Push
         run: |
