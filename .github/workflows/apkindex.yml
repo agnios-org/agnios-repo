@@ -32,7 +32,8 @@ jobs:
                    cd /repo && \
                    cp /tmp/keys/-6850c78f.rsa.pub /etc/apk/keys/ && \
                    apk index -o APKINDEX.tar.gz *.apk && \
-                   abuild-sign -k /key/myrepo.rsa APKINDEX.tar.gz"
+                   abuild-sign -k /key/myrepo.rsa APKINDEX.tar.gz && \
+                   openssl dgst -sha1 -sign /key/myrepo.rsa APKINDEX.tar.gz > APKINDEX.tar.gz.sig"
 
       - name: Commit and Push
         run: |
