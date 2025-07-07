@@ -28,11 +28,11 @@ jobs:
             -v ${{ github.workspace }}/myrepo.rsa:/key/myrepo.rsa \
             -v ${{ github.workspace }}/keys:/tmp/keys \
             alpine:latest \
-            sh -c "apk update && apk add alpine-sdk openssl && \
+            sh -c "apk update && apk add alpine-sdk abuild openssl && \
                    cd /repo && \
                    cp /tmp/keys/-6850c78f.rsa.pub /etc/apk/keys/ && \
                    apk index -o APKINDEX.tar.gz *.apk && \
-                   openssl dgst -sha1 -sign /key/myrepo.rsa APKINDEX.tar.gz > APKINDEX.tar.gz.sig"
+                   abuild-sign -k /root/.abuild-secret-key APKINDEX.tar.gz"
 
       - name: Commit and Push
         run: |
