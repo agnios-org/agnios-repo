@@ -1,21 +1,24 @@
-name: Deploy GitHub Pages
+name: Deploy APK Repo to GitHub Pages
 
 on:
   push:
     branches:
       - stable
+      - testing
 
 jobs:
-  deploy-pages:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./x86_64
           publish_branch: gh-pages
+          publish_dir: ./x86_64
+          keep_files: true  # Optional, if you want to retain other files
+
