@@ -6,7 +6,7 @@ on:
       - stable
       - testing
     paths:
-      - 'repo/x86_64/*.apk'
+      - 'x86_64/*.apk'
 
 jobs:
   generate-index:
@@ -24,9 +24,9 @@ jobs:
       - name: Generate APKINDEX.tar.gz and Sign
         run: |
           sudo docker run --rm \
-            -v ${{ github.workspace }}/repo/x86_64:/repo \
+            -v ${{ github.workspace }}/x86_64:/repo \
             -v ${{ github.workspace }}/myrepo.rsa:/key/myrepo.rsa \
-            -v ${{ github.workspace }}/repo/keys:/tmp/keys \
+            -v ${{ github.workspace }}/keys:/tmp/keys \
             alpine:latest \
             sh -c "apk update && apk add alpine-sdk openssl && \
                    cd /repo && \
@@ -38,7 +38,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add repo/x86_64/APKINDEX.tar.gz repo/x86_64/APKINDEX.tar.gz.sig
+          git add x86_64/APKINDEX.tar.gz x86_64/APKINDEX.tar.gz.sig
           git commit -m "Update APKINDEX and signature" || echo "Nothing to commit"
           git push
 
