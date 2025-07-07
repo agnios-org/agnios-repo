@@ -3,7 +3,8 @@ name: Generate APKINDEX and Sign
 on:
   push:
     branches:
-      - main
+      - stable
+      - testing
     paths:
       - 'repo/x86_64/*.apk'
 
