@@ -7,6 +7,12 @@ on:
       - develop
     paths:
       - 'x86_64/*.apk'
+  pull_request:
+    branches:
+      - stable
+      - develop
+    paths:
+      - 'x86_64/*.apk'
 
 jobs:
   generate-index:

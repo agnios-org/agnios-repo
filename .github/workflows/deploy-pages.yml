@@ -10,6 +10,16 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - branch: integration
+            publish_branch: gh-pages-integration
+          - branch: main
+            publish_branch: gh-pages-main
+
+    if: github.ref == 'refs/heads/' && contains(matrix.branch, github.ref_name)
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +33,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
+          publish_branch: ${{ matrix.publish_branch }}
           publish_dir: ./public
-          keep_files: true  # Optional, if you want to retain other files
+          keep_files: true
 
