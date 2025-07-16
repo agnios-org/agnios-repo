@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - stable
-      - testing
+      - develop
     paths:
       - 'x86_64/*.apk'
 
