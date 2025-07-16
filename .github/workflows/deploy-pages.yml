@@ -18,7 +18,7 @@ jobs:
           - branch: main
             publish_branch: gh-pages-main
 
-    if: github.ref == 'refs/heads/' && contains(matrix.branch, github.ref_name)
+    if: github.ref == 'refs/heads/stable' || github.ref == 'refs/heads/integration'
 
     steps:
       - name: Checkout
