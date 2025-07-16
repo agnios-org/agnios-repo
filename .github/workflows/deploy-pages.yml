@@ -13,12 +13,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - branch: integration
-            publish_branch: gh-pages-integration
-          - branch: main
-            publish_branch: gh-pages-main
+          - branch: stable
+            publish_branch: gh-pages
+          - branch: develop
+            publish_branch: gh-pages-develop
 
-    if: github.ref == 'refs/heads/stable' || github.ref == 'refs/heads/integration'
+    if: github.ref == 'refs/heads/stable' || github.ref == 'refs/heads/develop'
 
     steps:
       - name: Checkout
