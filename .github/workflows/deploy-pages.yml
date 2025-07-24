@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - stable
-      - develop
 
 jobs:
   deploy:
@@ -15,8 +14,6 @@ jobs:
         include:
           - branch: stable
             publish_branch: gh-pages
-          - branch: develop
-            publish_branch: gh-pages-develop
 
     if: github.ref == 'refs/heads/stable' || github.ref == 'refs/heads/develop'
 
